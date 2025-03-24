@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract SAM {
+    // Struct to store message metadata
+    struct Message {
+        address sender;         // Unique wallet address of the sender
+        bytes32 recipientKey;   // Hashed recipient address (keccak256(uniqueWalletAddress))
+        string messageId;       // Unique ID linking to off-chain message (e.g., IPFS hash)
+        uint256 timestamp;      // When the message was sent
+    }
+
+    // Mapping to store messages by a unique index
+    mapping(uint256 => Message) public messages;
+    uint256 public messageCount; // Tracks total messages for iteration
+
+    // Event emitted when a message is sent
+    event MessageSent(
+        uint256 indexed messageIndex,
+        address indexed sender,
+        bytes32 recipientKey,
+        string messageId,
+        uint256 timestamp
+    );
+
+    // Send a message (called by sender's unique wallet)
+    function sendMessage(bytes32 _recipientKey, string memory _messageId) external {
+        require(bytes(_messageId).length > 0, "Message ID cannot be empty");
+        
+        messages[messageCount] = Message({
+            sender: msg.sender,
+            recipientKey: _recipientKey,
+            messageId: _messageId,
+            timestamp: block.timestamp
+        });
+
+        emit MessageSent(messageCount, msg.sender, _recipientKey, _messageId, block.timestamp);
+        messageCount++;
+    }
+
+    // Get message details by index (for front-end lookup)
+    function getMessage(uint256 _index) external view returns (
+        address sender,
+        bytes32 recipientKey,
+        string memory messageId,
+        uint256 timestamp
+    ) {
+        require(_index < messageCount, "Invalid message index");
+        Message memory msg = messages[_index];
+        return (msg.sender, msg.recipientKey, msg.messageId, msg.timestamp);
+    }
+}
