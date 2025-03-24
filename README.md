@@ -1,4 +1,2 @@
-- 👋 Hi, I’m @Nk-The-Remaker
-- 👀 I’m interested in Designing Ideas 💡 
-- 🌱 I’m currently learning Machine Learning 
-- 💞️ I’m looking to collaborate on Blockchain Projects
+I’m @Nk-The-Remaker
+Logbook Remaking Ideas with Technology 
